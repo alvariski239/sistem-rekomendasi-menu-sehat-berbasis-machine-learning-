@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Rekomendasi Menu Sehat AI</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        h1, h2 { color: #38761d; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; }
+        .container { display: flex; gap: 20px; }
+        .input-form, .output-section { flex: 1; padding: 15px; border: 1px solid #ccc; border-radius: 8px; }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        input, select { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; border-radius: 4px; border: 1px solid #ddd; }
+        button { background-color: #6aa84f; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; margin-top: 20px; }
+        button:hover { background-color: #38761d; }
+        .recommendation-item { border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; border-radius: 4px; background-color: #f9f9f9; }
+        .recommendation-item strong { color: #38761d; }
+        .flow-diagram { margin-top: 30px; padding: 15px; background-color: #e6e6e6; border-radius: 8px; }
+    </style>
+</head>
+<body>
+
+    <h1>🥗 Aplikasi Rekomendasi Menu Sehat Berbasis ML</h1>
+    <div class="container">
+        
+        <div class="input-form">
+            <h2>1. Input Profil & Preferensi</h2>
+            <form id="recommendation-form">
+                <label for="usia">Usia (Tahun):</label>
+                <input type="number" id="usia" value="30" required>
+                
+                <label for="tinggi">Tinggi (cm):</label>
+                <input type="number" id="tinggi" value="170" required>
+                
+                <label for="berat">Berat Badan (kg):</label>
+                <input type="number" id="berat" value="75" required>
+
+                <label for="aktivitas">Tingkat Aktivitas:</label>
+                <select id="aktivitas" required>
+                    <option value="sedang">Sedang (3-5 hari/minggu)</option>
+                    <option value="rendah">Rendah (Sedentary)</option>
+                    <option value="tinggi">Tinggi (Harian)</option>
+                </select>
+
+                <label for="tujuan">Tujuan Diet:</label>
+                <select id="tujuan" required>
+                    <option value="maintain">Mempertahankan Berat Badan</option>
+                    <option value="loss">Menurunkan Berat Badan</option>
+                    <option value="gain">Menambah Massa Otot</option>
+                </select>
+
+                <button type="button" onclick="getRecommendation()">Dapatkan Rekomendasi Menu</button>
+            </form>
+        </div>
+
+        <div class="output-section">
+            <h2>2. Hasil Prediksi & Rekomendasi</h2>
+            <p><strong>Hasil Prediksi Model ML:</strong> <span id="prediction-output">Menunggu Input...</span></p>
+            <p>Model ML memprediksi kategori menu yang paling sesuai dengan kebutuhan Anda.</p>
+            
+            <h3>Rekomendasi Menu Sehat:</h3>
+            <div id="recommendation-list">
+                <p>Masukkan data Anda untuk mendapatkan menu.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flow-diagram">
+        <h2>3. Ilustrasi Alur Kerja Sistem</h2>
+        <p>1. Data Input dikirim ke **Backend Server** (via REST API).</p>
+        <p>2. Backend menghitung **Kebutuhan Kalori** dan mengirim data kunci ke **AI Engine** (e.g., Jenis Kelamin, Tujuan, Tingkat Kalori).</p>
+        <p>3. **AI Engine (Model KNN)** memprediksi **Kategori Menu** (e.g., 'Tinggi Protein').</p>
+        <p>4. Backend mengambil 3-5 menu dari **Database** berdasarkan kategori tersebut.</p>
+        <p>5. Hasil ditampilkan di halaman ini.</p>
+    </div>
+
+    <script>
+        function getRecommendation() {
+            // 1. Mengambil data dari form
+            const usia = document.getElementById('usia').value;
+            const tinggi = document.getElementById('tinggi').value;
+            const berat = document.getElementById('berat').value;
+            const aktivitas = document.getElementById('aktivitas').value;
+            const tujuan = document.getElementById('tujuan').value;
+
+            // 2. Simulasikan Perhitungan & Prediksi ML
+            // Simulasi BMR (Pria) untuk menghitung kebutuhan kalori harian
+            const bmr = (10 * berat) + (6.25 * tinggi) - (5 * usia) + 5;
+            let kalori_butuh = bmr * 1.55; // Asumsi aktivitas sedang
+
+            let predicted_category = '';
+            
+            if (tujuan === 'loss') {
+                kalori_butuh -= 500;
+                predicted_category = 'Low Carb & High Fiber';
+            } else if (tujuan === 'gain') {
+                kalori_butuh += 500;
+                predicted_category = 'High Protein & High Calorie';
+            } else {
+                predicted_category = 'Balanced Macronutrients';
+            }
+
+            // 3. Menampilkan Hasil Prediksi ML
+            document.getElementById('prediction-output').innerHTML = `**${predicted_category}** (Est. Kebutuhan Kalori: ${Math.round(kalori_butuh)} Kcal)`;
+
+            // 4. Simulasi Rekomendasi Menu dari Database
+            const recommendations = {
+                'Low Carb & High Fiber': [
+                    { nama: 'Salad Ayam Panggang', kalori: 450, bahan: 'Sayuran hijau, dada ayam, olive oil.' },
+                    { nama: 'Sup Kacang Merah', kalori: 380, bahan: 'Kacang merah, tomat, brokoli.' },
+                    { nama: 'Tuna Saus Lemon', kalori: 520, bahan: 'Ikan tuna, asparagus kukus.' }
+                ],
+                'High Protein & High Calorie': [
+                    { nama: 'Steak Daging Merah', kalori: 700, bahan: 'Daging sapi, ubi jalar, sayuran akar.' },
+                    { nama: 'Smoothie Protein Kacang', kalori: 650, bahan: 'Protein bubuk, selai kacang, pisang.' },
+                    { nama: 'Nasi Goreng Telur 3 Butir', kalori: 800, bahan: 'Nasi merah, 3 telur, dada ayam.' }
+                ],
+                'Balanced Macronutrients': [
+                    { nama: 'Nasi Cokelat Ikan Salmon', kalori: 550, bahan: 'Nasi merah, salmon panggang, bayam.' },
+                    { nama: 'Oatmeal Buah Beri', kalori: 420, bahan: 'Oatmeal, susu rendah lemak, buah beri.' },
+                    { nama: 'Gado-Gado Tanpa Lontong', kalori: 480, bahan: 'Sayuran kukus, tahu, tempe, saus kacang rendah gula.' }
+                ]
+            };
+
+            const selectedMenus = recommendations[predicted_category] || recommendations['Balanced Macronutrients'];
+            let htmlList = selectedMenus.map(menu => `
+                <div class="recommendation-item">
+                    <strong>${menu.nama}</strong><br>
+                    Estimasi Kalori: ${menu.kalori} Kcal | Bahan Utama: ${menu.bahan}
+                </div>
+            `).join('');
+
+            document.getElementById('recommendation-list').innerHTML = htmlList;
+        }
+    </script>
+</body>
+</html>
